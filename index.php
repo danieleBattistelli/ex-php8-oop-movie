@@ -13,19 +13,23 @@ class Movie {
     public $title;
     public $director;
     public $year;
-    public $genre;
+    public $genres;
 
     // Costruttore
-    public function __construct($title, $director, $year, $genre) {
+    public function __construct($title, $director, $year, $genres) {
         $this->title = $title;
         $this->director = $director;
         $this->year = $year;
-        $this->genre = $genre;
+        $this->genres = $genres;
     }
 
     // Metodo per ottenere informazioni sul film
     public function getInfo() {
-        return "Title: {$this->title}, Director: {$this->director}, Year: {$this->year}, Genre: {$this->genre->name}";
+        $genres = array_map(function($genre) {
+            return $genre->name;
+        }, $this->genres);
+        $genres_str = implode(", ", $genres);
+        return "Title: {$this->title}, Director: {$this->director}, Year: {$this->year}, Genres: {$genres_str}";
     }
 }
 
@@ -34,8 +38,8 @@ $genre1 = new Genre("Sci-Fi");
 $genre2 = new Genre("Action");
 
 // Creazione di due oggetti Movie
-$movie1 = new Movie("Inception", "Christopher Nolan", 2010, $genre1);
-$movie2 = new Movie("The Matrix", "Lana Wachowski, Lilly Wachowski", 1999, $genre2);
+$movie1 = new Movie("Inception", "Christopher Nolan", 2010, [$genre1, $genre2]);
+$movie2 = new Movie("The Matrix", "Lana Wachowski, Lilly Wachowski", 1999, [$genre2]);
 
 // Stampa delle proprietà dei film
 echo $movie1->getInfo();
