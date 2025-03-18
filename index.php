@@ -1,76 +1,43 @@
 <?php
 
-class Genre
-{
-    public $name;
+require_once __DIR__ . '/Models/Genre.php';
+require_once __DIR__ . '/Models/Movie.php';
+require_once __DIR__ . '/Models/Rating.php';
+require_once __DIR__ . '/db.php';
 
-    // Costruttore
-    public function __construct($name)
-    {
-        $this->name = $name;
-    }
-}
+?>
 
-trait Rating
-{
-    public $rating;
+<!DOCTYPE html>
+<html lang="it">
 
-    public function setRating($rating)
-    {
-        $this->rating = $rating;
-    }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista di Film</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
 
-    public function getRating()
-    {
-        return $this->rating;
-    }
-}
+<body class="container">
+    <h1 class="my-4">Lista di Film</h1>
+    <?php foreach ($movies as $movie): ?>
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 class="card-title"><?php echo $movie->getTitle(); ?></h2>
+                <p class="card-text"><strong>Regista:</strong> <?php echo $movie->getDirector(); ?></p>
+                <p class="card-text"><strong>Anno:</strong> <?php echo $movie->getYear(); ?></p>
+                <p class="card-text"><strong>Generi:</strong>
+                    <?php
+                    $genres = $movie->getGenres();
+                    $genreNames = array_map(function ($genre) {
+                        return $genre->getName();
+                    }, $genres);
+                    echo implode(", ", $genreNames);
+                    ?>
+                </p>
+                <p class="card-text"><strong>Rating:</strong> <?php echo $movie->getRating(); ?></p>
+            </div>
+        </div>
+    <?php endforeach; ?>
+</body>
 
-class Movie
-{
-    use Rating;
-    public $title;
-    public $director;
-    public $year;
-    public $genres;
-
-    // Costruttore
-    public function __construct($title, $director, $year, $genres)
-    {
-        $this->title = $title;
-        $this->director = $director;
-        $this->year = $year;
-        $this->genres = $genres;
-    }
-
-    // Metodo per ottenere informazioni sul film
-    public function getInfo()
-    {
-        $genres = array_map(function ($genre) {
-            return $genre->name;
-        }, $this->genres);
-        $genres_str = implode(", ", $genres);
-        return "Title: {$this->title}, Director: {$this->director}, Year: {$this->year}, Genres: {$genres_str}";
-    }
-}
-
-// Creazione di due oggetti Genre
-$genre1 = new Genre("Sci-Fi");
-$genre2 = new Genre("Action");
-
-// Creazione di due oggetti Movie
-$movie1 = new Movie("Inception", "Christopher Nolan", 2010, [$genre1, $genre2]);
-$movie2 = new Movie("The Matrix", "Lana Wachowski, Lilly Wachowski", 1999, [$genre2]);
-
-// Impostazione del rating per i film
-$movie1->setRating(8.8);
-$movie2->setRating(8.7);
-
-// Stampa delle proprietà dei film
-echo $movie1->getInfo();
-echo "<br>";
-echo "Rating: " . $movie1->getRating();
-echo "<br>";
-echo $movie2->getInfo();
-echo "<br>";
-echo "Rating: " . $movie2->getRating();
+</html>
